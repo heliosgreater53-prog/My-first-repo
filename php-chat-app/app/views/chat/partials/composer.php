@@ -107,6 +107,12 @@ $isMuted = !empty($user['is_muted']);
             <?php if ($layoutMode === 'room'): ?>
                 <button class="composer-tool" type="button" id="voiceRecordButton" title="Voice note"><i class="bi bi-mic"></i></button>
             <?php endif; ?>
+
+            <!-- Used by the voice upload flow to attach audio reliably -->
+            <input type="hidden" id="attachmentMetaPath" name="attachment_meta_path" value="">
+            <input type="hidden" id="attachmentMetaType" name="attachment_meta_type" value="">
+            <input type="hidden" id="attachmentMetaName" name="attachment_meta_name" value="">
+
             <button type="submit" id="composerSubmitButton" class="composer-send" title="Send"><i class="bi bi-send-fill"></i><span class="composer-send-label"><?= $editMessage ? 'Save' : 'Post'; ?></span></button>
         </div>
         <div class="composer-meta">

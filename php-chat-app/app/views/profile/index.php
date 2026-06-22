@@ -140,8 +140,7 @@ require view_path('partials/app-shell-open');
         </section>
     </main>
 
-    <aside class="chat-info" id="chatInfoPanel" aria-label="Account and settings">
-        <?php require view_path('profile/partials/profile-aside'); ?>
-    </aside>
-<?php require view_path('partials/app-shell-close'); ?>
-<?php require view_path('partials.footer'); ?>
+    <!-- Right sidebar intentionally left empty (profile page now only shows the main profile card + edit modal). -->
+    <aside class="chat-info" id="chatInfoPanel" aria-label="Account and settings"></aside>
+ <?php require view_path('partials/app-shell-close'); ?>
+ <?php require view_path('partials/footer'); ?>

@@ -1,6 +1,8 @@
 ﻿document.addEventListener("DOMContentLoaded", () => {
   console.log("[Chat] DOM loaded");
-  const feed = document.getElementById("conversationFeed");
+  const feed =
+    document.getElementById("conversationFeed") ||
+    document.getElementById("conversationFeedRoom");
   const composer = document.getElementById("chatComposer");
   const messageInput = document.getElementById("messageInput");
   const replyToInput = document.getElementById("replyToInput");
@@ -35,12 +37,13 @@
   // - post actions (feed page)
   // - chat/message actions (chat page)
   // So we must not early-return just because chat-only elements are absent.
+  // feed is required for message actions/stream rendering, but the composer
+  // (send/reply/edit/voice) must still work even if a particular feed id isn't present.
   if (!feed) {
-    console.warn("[Chat] Missing required elements: #conversationFeed");
-    return;
+    console.warn(
+      "[Chat] Missing feed container element (conversationFeed). Message stream/actions will be disabled.",
+    );
   }
-
-
 
   const roomSlug = feed.dataset.roomSlug || "";
   const layoutMode = feed.dataset.layout || "feed";
@@ -145,10 +148,12 @@
     composerMoreBtn.setAttribute("aria-expanded", willOpen ? "true" : "false");
   });
 
-  document.getElementById("scheduleToggle")?.addEventListener("change", function () {
-    const inp = document.getElementById("scheduledAtInput");
-    if (inp) inp.disabled = !this.checked;
-  });
+  document
+    .getElementById("scheduleToggle")
+    ?.addEventListener("change", function () {
+      const inp = document.getElementById("scheduledAtInput");
+      if (inp) inp.disabled = !this.checked;
+    });
 
   const updateTextareaHeight = () => {
     messageInput.style.height = "auto";
@@ -205,35 +210,37 @@
 
   const bindMessageActions = () => {
     // ===== Feed post actions (like / comments) =====
-    const postLikeButtons = document.querySelectorAll('.js-post-like');
-    const postCommentsButtons = document.querySelectorAll('.js-post-comments');
+    const postLikeButtons = document.querySelectorAll(".js-post-like");
+    const postCommentsButtons = document.querySelectorAll(".js-post-comments");
 
-    const postCommentsModal = document.getElementById('postCommentsModal');
+    const postCommentsModal = document.getElementById("postCommentsModal");
 
-    const postCommentsClose = document.getElementById('postCommentsClose');
-    const postCommentsBody = document.querySelector('.js-post-comments-body');
-    const postCommentInput = document.getElementById('postCommentInput');
-    const postCommentPostId = document.getElementById('postCommentPostId');
-    const postCommentParentId = document.getElementById('postCommentParentId');
-    const postCommentSubmit = document.getElementById('postCommentSubmit');
-    const postCommentCancelReply = document.getElementById('postCommentCancelReply');
-    const postCommentsList = document.querySelector('.js-post-comments-list');
+    const postCommentsClose = document.getElementById("postCommentsClose");
+    const postCommentsBody = document.querySelector(".js-post-comments-body");
+    const postCommentInput = document.getElementById("postCommentInput");
+    const postCommentPostId = document.getElementById("postCommentPostId");
+    const postCommentParentId = document.getElementById("postCommentParentId");
+    const postCommentSubmit = document.getElementById("postCommentSubmit");
+    const postCommentCancelReply = document.getElementById(
+      "postCommentCancelReply",
+    );
+    const postCommentsList = document.querySelector(".js-post-comments-list");
 
     const openCommentsModal = () => {
-      postCommentsModal?.classList.add('is-open');
+      postCommentsModal?.classList.add("is-open");
       // also set display for inline style modal
-      if (postCommentsModal) postCommentsModal.style.display = 'flex';
+      if (postCommentsModal) postCommentsModal.style.display = "flex";
       postCommentInput?.focus?.();
     };
 
     const closeCommentsModal = () => {
-      postCommentsModal?.classList.remove('is-open');
-      if (postCommentsModal) postCommentsModal.style.display = 'none';
+      postCommentsModal?.classList.remove("is-open");
+      if (postCommentsModal) postCommentsModal.style.display = "none";
     };
 
-    postCommentsClose?.addEventListener('click', closeCommentsModal);
+    postCommentsClose?.addEventListener("click", closeCommentsModal);
 
-    postCommentsModal?.addEventListener('click', (e) => {
+    postCommentsModal?.addEventListener("click", (e) => {
       if (e.target === postCommentsModal) closeCommentsModal();
     });
 
@@ -245,10 +252,13 @@
       return nodes
         .map((node) => {
           const indent = Math.min(level, 6) * 14;
-          const children = node.children && node.children.length ? renderCommentNodes(node.children, level + 1) : '';
+          const children =
+            node.children && node.children.length
+              ? renderCommentNodes(node.children, level + 1)
+              : "";
           const replyTargetId = String(node.id);
-          const safeName = node.name || 'User';
-          const safeBody = node.body || '';
+          const safeName = node.name || "User";
+          const safeBody = node.body || "";
           return `
             <div class="post-comment-node" style="margin-left:${indent}px; padding:10px; border:1px solid var(--border); border-radius:12px; background:var(--surface);">
               <div style="display:flex; justify-content:space-between; gap:12px; align-items:flex-start;">
@@ -262,82 +272,93 @@
             </div>
           `;
         })
-        .join('');
+        .join("");
     };
 
     const escapeHtml = (value) => {
       return String(value)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '<')
-        .replace(/>/g, '>')
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "<")
+        .replace(/>/g, ">")
         .replace(/"/g, '"')
-        .replace(/'/g, '&#039;');
+        .replace(/'/g, "&#039;");
     };
 
     postLikeButtons.forEach((btn) => {
-      btn.addEventListener('click', async () => {
+      btn.addEventListener("click", async () => {
         const postId = Number(btn.dataset.postId || 0);
         if (!postId) return;
         try {
-          const res = await fetch('/posts/like', {
-            method: 'POST',
+          const res = await fetch("/posts/like", {
+            method: "POST",
             headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-              'X-Requested-With': 'XMLHttpRequest',
+              "Content-Type": "application/x-www-form-urlencoded",
+              "X-Requested-With": "XMLHttpRequest",
             },
-            body: new URLSearchParams({ _token: csrfToken, post_id: String(postId) }),
+            body: new URLSearchParams({
+              _token: csrfToken,
+              post_id: String(postId),
+            }),
           });
           const payload = await res.json();
           if (!payload?.ok) return;
-          const countEl = btn.querySelector('.js-post-like-count');
+          const countEl = btn.querySelector(".js-post-like-count");
           if (countEl) countEl.textContent = String(payload.likeCount ?? 0);
         } catch (e) {
-          console.error('Like failed', e);
+          console.error("Like failed", e);
         }
       });
-
     });
 
     // Initialize counters on page load.
     const initPostCounters = async () => {
-      const postLikeButtonsLocal = document.querySelectorAll('.js-post-like');
-      const postCommentsButtonsLocal = document.querySelectorAll('.js-post-comments');
+      const postLikeButtonsLocal = document.querySelectorAll(".js-post-like");
+      const postCommentsButtonsLocal =
+        document.querySelectorAll(".js-post-comments");
 
       const tasks = [];
 
       postLikeButtonsLocal.forEach((btn) => {
         const postId = Number(btn.dataset.postId || 0);
         if (!postId) return;
-        const countEl = btn.querySelector('.js-post-like-count');
+        const countEl = btn.querySelector(".js-post-like-count");
         if (!countEl) return;
 
         tasks.push(
-          fetch(`/posts/like-count?post_id=${encodeURIComponent(String(postId))}`, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' },
-          })
+          fetch(
+            `/posts/like-count?post_id=${encodeURIComponent(String(postId))}`,
+            {
+              headers: { "X-Requested-With": "XMLHttpRequest" },
+            },
+          )
             .then((r) => r.json())
             .then((payload) => {
-              if (payload?.ok) countEl.textContent = String(payload.likeCount ?? 0);
+              if (payload?.ok)
+                countEl.textContent = String(payload.likeCount ?? 0);
             })
-            .catch(() => {})
+            .catch(() => {}),
         );
       });
 
       postCommentsButtonsLocal.forEach((btn) => {
         const postId = Number(btn.dataset.postId || 0);
         if (!postId) return;
-        const countEl = btn.querySelector('.js-post-comment-count');
+        const countEl = btn.querySelector(".js-post-comment-count");
         if (!countEl) return;
 
         tasks.push(
-          fetch(`/posts/comments-count?post_id=${encodeURIComponent(String(postId))}`, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' },
-          })
+          fetch(
+            `/posts/comments-count?post_id=${encodeURIComponent(String(postId))}`,
+            {
+              headers: { "X-Requested-With": "XMLHttpRequest" },
+            },
+          )
             .then((r) => r.json())
             .then((payload) => {
-              if (payload?.ok) countEl.textContent = String(payload.commentsCount ?? 0);
+              if (payload?.ok)
+                countEl.textContent = String(payload.commentsCount ?? 0);
             })
-            .catch(() => {})
+            .catch(() => {}),
         );
       });
 
@@ -346,96 +367,123 @@
 
     initPostCounters();
 
-
     postCommentsButtons.forEach((btn) => {
-      btn.addEventListener('click', async () => {
+      btn.addEventListener("click", async () => {
         const postId = Number(btn.dataset.postId || 0);
         if (!postId) return;
 
         if (postCommentPostId) postCommentPostId.value = String(postId);
-        if (postCommentParentId) postCommentParentId.value = '';
+        if (postCommentParentId) postCommentParentId.value = "";
 
         openCommentsModal();
-        if (postCommentsBody) postCommentsBody.textContent = 'Loading...';
-        if (postCommentsList) postCommentsList.innerHTML = '';
+        if (postCommentsBody) postCommentsBody.textContent = "Loading...";
+        if (postCommentsList) postCommentsList.innerHTML = "";
 
         try {
-          const res = await fetch(`/posts/comments?post_id=${encodeURIComponent(String(postId))}`, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' },
-          });
+          const res = await fetch(
+            `/posts/comments?post_id=${encodeURIComponent(String(postId))}`,
+            {
+              headers: { "X-Requested-With": "XMLHttpRequest" },
+            },
+          );
           const payload = await res.json();
           if (!payload?.ok) return;
-          if (postCommentsList) postCommentsList.innerHTML = renderCommentNodes(payload.comments || []);
-          if (postCommentsBody) postCommentsBody.textContent = 'Comments';
+          if (postCommentsList)
+            postCommentsList.innerHTML = renderCommentNodes(
+              payload.comments || [],
+            );
+          if (postCommentsBody) postCommentsBody.textContent = "Comments";
         } catch (e) {
-          console.error('Load comments failed', e);
+          console.error("Load comments failed", e);
         }
       });
     });
 
-    postCommentCancelReply?.addEventListener('click', () => {
-      if (postCommentParentId) postCommentParentId.value = '';
+    postCommentCancelReply?.addEventListener("click", () => {
+      if (postCommentParentId) postCommentParentId.value = "";
     });
 
-    postCommentsList?.addEventListener('click', (e) => {
-      const replyBtn = e.target.closest('.js-comment-reply');
+    postCommentsList?.addEventListener("click", (e) => {
+      const replyBtn = e.target.closest(".js-comment-reply");
       if (!replyBtn) return;
-      const parentId = replyBtn.dataset.parentId || '';
+      const parentId = replyBtn.dataset.parentId || "";
       if (postCommentParentId) postCommentParentId.value = String(parentId);
       postCommentInput?.focus?.();
     });
 
-    postCommentSubmit?.addEventListener('click', async () => {
+    postCommentSubmit?.addEventListener("click", async () => {
       const postId = Number(postCommentPostId?.value || 0);
 
-      const parentIdRaw = postCommentParentId?.value || '';
+      const parentIdRaw = postCommentParentId?.value || "";
       const parentId = parentIdRaw ? Number(parentIdRaw) : null;
-      const body = (postCommentInput?.value || '').trim();
-      if (!postId || body === '') return;
+      const body = (postCommentInput?.value || "").trim();
+      if (!postId || body === "") return;
 
       try {
-        const res = await fetch('/posts/comments', {
-          method: 'POST',
+        const res = await fetch("/posts/comments", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'X-Requested-With': 'XMLHttpRequest',
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-Requested-With": "XMLHttpRequest",
           },
           body: new URLSearchParams({
             _token: csrfToken,
             post_id: String(postId),
-            parent_id: parentId !== null ? String(parentId) : '',
+            parent_id: parentId !== null ? String(parentId) : "",
             body,
           }),
         });
         const payload = await res.json();
         if (!payload?.ok) return;
 
-        if (postCommentInput) postCommentInput.value = '';
-        if (postCommentParentId) postCommentParentId.value = '';
-        if (postCommentsList) postCommentsList.innerHTML = renderCommentNodes(payload.comments || []);
+        if (postCommentInput) postCommentInput.value = "";
+        if (postCommentParentId) postCommentParentId.value = "";
+        if (postCommentsList)
+          postCommentsList.innerHTML = renderCommentNodes(
+            payload.comments || [],
+          );
 
         // Update comment counter on the main feed button.
         const commentCountEls = document.querySelectorAll(
-          `.js-post-comments[data-post-id="${CSS.escape(String(postId))}"] .js-post-comment-count`
+          `.js-post-comments[data-post-id="${CSS.escape(String(postId))}"] .js-post-comment-count`,
         );
         const refreshCount = async () => {
-          const r = await fetch(`/posts/comments-count?post_id=${encodeURIComponent(String(postId))}`, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' },
-          });
+          const r = await fetch(
+            `/posts/comments-count?post_id=${encodeURIComponent(String(postId))}`,
+            {
+              headers: { "X-Requested-With": "XMLHttpRequest" },
+            },
+          );
           const p = await r.json();
           const nextCount = String(p?.commentsCount ?? 0);
           commentCountEls.forEach((el) => (el.textContent = nextCount));
         };
         refreshCount().catch(() => {});
       } catch (e) {
-        console.error('Create comment failed', e);
+        console.error("Create comment failed", e);
       }
     });
 
-    document.querySelectorAll(".js-edit-post").forEach((button) => {
+    // Message actions (reply/edit) are re-rendered during refreshStream().
+    // Use event delegation to keep handlers working reliably.
+    feed?.addEventListener("click", (e) => {
+      const replyBtn = e.target.closest(".js-reply-post");
+      if (replyBtn) {
+        const cluster = replyBtn.closest("[data-message-id]");
+        if (!cluster) return;
+        setEditState();
+        setReplyState(
+          cluster.dataset.messageId || "",
+          cluster.dataset.messageAuthor || "",
+          cluster.dataset.messageBody || "",
+          cluster.dataset.messageRoom || "",
+        );
+        return;
+      }
 
-      button.onclick = () => {
-        const cluster = button.closest("[data-message-id]");
+      const editBtn = e.target.closest(".js-edit-post");
+      if (editBtn) {
+        const cluster = editBtn.closest("[data-message-id]");
         if (!cluster || cluster.dataset.messageCanEdit !== "1") return;
         setReplyState();
         setEditState(
@@ -443,7 +491,7 @@
           cluster.dataset.messageBody || "",
           cluster.dataset.messageRoom || "",
         );
-      };
+      }
     });
 
     document.querySelectorAll(".js-copy-post").forEach((button) => {
@@ -476,7 +524,6 @@
     updateTextareaHeight();
     updateComposerMode();
   }
-
 
   messageInput.addEventListener("input", updateTextareaHeight);
   messageInput.addEventListener("input", () => {
@@ -514,64 +561,119 @@
     });
   }
 
-  if (
-    voiceRecordButton &&
-    attachmentInput &&
-    navigator.mediaDevices &&
-    window.MediaRecorder
-  ) {
+  if (voiceRecordButton && navigator.mediaDevices && window.MediaRecorder) {
     let recorder = null;
     let chunks = [];
+    let streamRef = null;
+
+    const clearVoiceMeta = () => {
+      const pathEl = document.getElementById("attachmentMetaPath");
+      const typeEl = document.getElementById("attachmentMetaType");
+      const nameEl = document.getElementById("attachmentMetaName");
+      if (pathEl) pathEl.value = "";
+      if (typeEl) typeEl.value = "";
+      if (nameEl) nameEl.value = "";
+      if (attachmentInput) attachmentInput.value = "";
+    };
+
     voiceRecordButton.addEventListener("click", async () => {
       if (recorder && recorder.state === "recording") {
         recorder.stop();
         voiceRecordButton.classList.remove("is-recording");
 
-        // Stop recording indicator for others.
         fetch("/chat/recording", {
           method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
             "X-Requested-With": "XMLHttpRequest",
           },
-          body: new URLSearchParams({ _token: csrfToken, room: roomSlug, state: "0" }),
+          body: new URLSearchParams({
+            _token: csrfToken,
+            room: roomSlug,
+            state: "0",
+          }),
         }).catch(() => {});
 
         return;
       }
+
+      clearVoiceMeta();
+
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-        });
+        streamRef = await navigator.mediaDevices.getUserMedia({ audio: true });
         chunks = [];
-        recorder = new MediaRecorder(stream);
+        recorder = new MediaRecorder(streamRef);
+
         recorder.ondataavailable = (event) => chunks.push(event.data);
-        recorder.onstop = () => {
-          const blob = new Blob(chunks, { type: "audio/webm" });
-          const file = new File([blob], `voice-${Date.now()}.webm`, {
-            type: "audio/webm",
-          });
-          const transfer = new DataTransfer();
-          transfer.items.add(file);
-          attachmentInput.files = transfer.files;
-          if (attachmentLabel) attachmentLabel.textContent = "Voice note ready";
-          stream.getTracks().forEach((track) => track.stop());
+
+        recorder.onstop = async () => {
+          try {
+            const blob = new Blob(chunks, { type: "audio/webm" });
+            const file = new File([blob], `voice-${Date.now()}.webm`, {
+              type: "audio/webm",
+            });
+
+            const fd = new FormData();
+            fd.append("attachment", file);
+            fd.append("_token", csrfToken);
+            fd.append("room", roomSlug);
+            fd.append("format", "json");
+
+            const res = await fetch("/chat/voice/upload", {
+              method: "POST",
+              body: fd,
+              credentials: "same-origin",
+              headers: { "X-Requested-With": "XMLHttpRequest" },
+            });
+
+            const payload = await res.json().catch(() => ({
+              ok: false,
+              message: "Unexpected upload response.",
+            }));
+            if (!payload?.ok || !payload?.attachment) {
+              showToast(
+                payload?.message || "Unable to upload voice note.",
+                "error",
+              );
+              return;
+            }
+
+            const { path, type, name } = payload.attachment;
+
+            const pathEl = document.getElementById("attachmentMetaPath");
+            const typeEl = document.getElementById("attachmentMetaType");
+            const nameEl = document.getElementById("attachmentMetaName");
+            if (pathEl) pathEl.value = path || "";
+            if (typeEl) typeEl.value = type || "";
+            if (nameEl) nameEl.value = name || "";
+
+            if (attachmentLabel)
+              attachmentLabel.textContent = "Voice note ready";
+          } finally {
+            streamRef?.getTracks?.().forEach((track) => track.stop());
+            streamRef = null;
+          }
         };
+
         recorder.start();
         voiceRecordButton.classList.add("is-recording");
         markActivity();
 
-        // Inform others that this user is recording audio in real-time (poll-based).
         fetch("/chat/recording", {
           method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
             "X-Requested-With": "XMLHttpRequest",
           },
-          body: new URLSearchParams({ _token: csrfToken, room: roomSlug, state: "1" }),
+          body: new URLSearchParams({
+            _token: csrfToken,
+            room: roomSlug,
+            state: "1",
+          }),
         }).catch(() => {});
       } catch (error) {
         console.error("Voice recording failed", error);
+        showToast("Voice recording failed.", "error");
       }
     });
   }
@@ -603,29 +705,21 @@
   };
 
   composer.addEventListener("submit", async (event) => {
-    // IMPORTANT: On room pages we must submit to /chat/messages using normal HTML form POST.
-    // Otherwise the LetsChatRealtime post helper may route the submission like a feed post.
-    if (layoutMode === "room") {
-      // Do not preventDefault(); let the form action submit.
-      return;
-    }
-
-    // Make sure the burst mode also begins immediately when the user presses Enter/Send.
-    // This reduces perceived delay (waiting for the next poll) after sending.
     markActivity();
     event.preventDefault();
     if (submitButton) submitButton.disabled = true;
     try {
-      // Burst polling so other users' messages feel more immediate after you send.
       markActivity();
 
       const payload = window.LetsChatRealtime
         ? await window.LetsChatRealtime.postFormJson(composer)
         : null;
+
       if (!payload?.ok) {
         showToast(payload?.message || "Unable to send message.", "error");
         return;
       }
+
       resetComposerAfterSend();
       await refreshStream();
       if (layoutMode === "room") scrollFeedToBottom();
@@ -678,9 +772,8 @@
 
     try {
       const response = await fetch(streamUrl, {
-          headers: { "X-Requested-With": "XMLHttpRequest" },
-        },
-      );
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+      });
 
       if (!response.ok) return;
 
@@ -688,7 +781,8 @@
       if (!payload.ok || !Array.isArray(payload.messages)) return;
 
       const newMessageCount = payload.messages.length;
-      if (socialPostCount) socialPostCount.textContent = String(newMessageCount);
+      if (socialPostCount)
+        socialPostCount.textContent = String(newMessageCount);
       const hasNewMessage =
         lastMessageCount !== null && newMessageCount > lastMessageCount;
       lastMessageCount = newMessageCount;
@@ -803,10 +897,13 @@
         const latestMessage = payload.messages[payload.messages.length - 1];
         if (latestMessage && Number(latestMessage.user_id) !== authUserId) {
           const targetSlug =
-            latestMessage.room_slug || (layoutMode === "feed" ? "home" : roomSlug);
+            latestMessage.room_slug ||
+            (layoutMode === "feed" ? "home" : roomSlug);
           const targetRoomName =
             latestMessage.room_name ||
-            document.querySelector(".room-channel-title h2")?.textContent?.trim() ||
+            document
+              .querySelector(".room-channel-title h2")
+              ?.textContent?.trim() ||
             "LivingSpring";
           navigator.serviceWorker.getRegistration().then((registration) => {
             registration?.active?.postMessage({
@@ -907,7 +1004,8 @@ function roleLabel(role) {
 function roleMetaBadgeMarkup(role, modifier) {
   const label = roleLabel(role);
   if (!label) return "";
-  const badgeClass = modifier === "post" ? "post-role-badge" : "message-role-badge";
+  const badgeClass =
+    modifier === "post" ? "post-role-badge" : "message-role-badge";
   const roleClass = role === "admin" ? "admin" : "mod";
   const icon = role === "admin" ? "bi-patch-check-fill" : "bi-shield-fill";
 
@@ -999,8 +1097,13 @@ function renderMessages(
       const avatarUrl =
         message.avatar_path ||
         `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`;
-      const roleBadge = roleBadgeMarkup(message.user_role || message.role || "");
-      const roleMetaBadge = roleMetaBadgeMarkup(message.user_role || message.role || "", "post");
+      const roleBadge = roleBadgeMarkup(
+        message.user_role || message.role || "",
+      );
+      const roleMetaBadge = roleMetaBadgeMarkup(
+        message.user_role || message.role || "",
+        "post",
+      );
 
       const interactionsMarkup = `
       <div class="post-interactions">
@@ -1086,7 +1189,10 @@ function renderRoomMessage(
     minute: "2-digit",
   });
   const roleBadge = roleBadgeMarkup(message.user_role || message.role || "");
-  const roleMetaBadge = roleMetaBadgeMarkup(message.user_role || message.role || "", "message");
+  const roleMetaBadge = roleMetaBadgeMarkup(
+    message.user_role || message.role || "",
+    "message",
+  );
   const initials =
     name
       .split(/\s+/)

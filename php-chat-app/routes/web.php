@@ -24,6 +24,7 @@ $router->post('/chat/rooms', 'ChatController@createRoom', ['auth', 'csrf', 'acti
 $router->get('/chat/stream', 'ChatController@stream', ['auth', 'activity']);
 $router->post('/chat/typing', 'ChatController@typing', ['auth', 'csrf', 'activity']);
 $router->post('/chat/recording', 'ChatController@recording', ['auth', 'csrf', 'activity']);
+$router->post('/chat/voice/upload', 'ChatController@voiceUpload', ['auth', 'csrf', 'activity']);
 
 $router->post('/communities/join', 'ChatController@joinCommunity', ['auth', 'csrf', 'activity']);
 $router->get('/notifications', 'ChatController@notifications', ['auth', 'activity']);

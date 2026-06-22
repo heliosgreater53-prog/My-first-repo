@@ -278,7 +278,24 @@ $this->formRespond(
             $this->formRespond($request, false, 'Choose a room to post in.', url('/feed'));
         }
 
+        // Normal attachments come from multipart "attachment".
         $attachment = $this->storeChatAttachment($request);
+
+        // Voice upload flow sends audio first, then attaches via hidden meta fields.
+        if ($attachment === []) {
+            $metaPath = trim((string) $request->input('attachment_meta_path', ''));
+            $metaType = trim((string) $request->input('attachment_meta_type', ''));
+            $metaName = trim((string) $request->input('attachment_meta_name', ''));
+
+            if ($metaPath !== '' && $metaType !== '') {
+                $attachment = [
+                    'path' => $metaPath,
+                    'type' => $metaType,
+                    'name' => $metaName !== '' ? $metaName : 'voice-note',
+                ];
+            }
+        }
+
         $roomId = (int) ($room['id'] ?? 0);
 
         $messageId = $messageModel->create(
@@ -486,6 +503,34 @@ $this->formRespond(
         }
 
         $this->json(['ok' => $room !== null]);
+    }
+
+    // Upload endpoint for voice notes. Frontend records audio (webm) and uploads it here.
+    // Returns attachment meta so the composer can send the message without relying on setting input.files.
+    public function voiceUpload(Request $request): void
+    {
+        $user = $this->requireUser();
+        [$roomModel] = $this->bootChatModels();
+
+        $roomSlug = trim((string) $request->input('room', ''));
+        $room = $roomModel->findAccessibleBySlug($user, $roomSlug);
+
+        if ($room === null) {
+            $this->json(['ok' => false, 'message' => 'Room not found.']);
+            return;
+        }
+
+        // Reuse existing attachment storage/validation.
+        $attachment = $this->storeChatAttachment($request);
+        if ($attachment === []) {
+            $this->json(['ok' => false, 'message' => 'Unable to upload voice note.']);
+            return;
+        }
+
+        $this->json([
+            'ok' => true,
+            'attachment' => $attachment,
+        ]);
     }
 
     public function reportMessage(Request $request): void
