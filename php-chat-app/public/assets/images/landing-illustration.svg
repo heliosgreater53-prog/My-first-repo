@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="720" height="520" viewBox="0 0 720 520" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0" stop-color="#14b8a6" />
+      <stop offset="1" stop-color="#06b6d4" />
+    </linearGradient>
+  </defs>
+  <rect width="720" height="520" rx="18" fill="#071227" />
+  <g transform="translate(40,40)">
+    <rect x="0" y="0" width="380" height="220" rx="12" fill="#0b1220" stroke="rgba(255,255,255,0.04)" />
+    <rect x="20" y="20" width="140" height="16" rx="8" fill="#071f33" opacity="0.6" />
+    <rect x="20" y="44" width="320" height="14" rx="7" fill="#071f33" opacity="0.5" />
+    <circle cx="60" cy="100" r="28" fill="url(#g)" />
+    <rect x="100" y="80" width="220" height="16" rx="8" fill="#0b1220" />
+    <rect x="100" y="104" width="180" height="12" rx="6" fill="#0b1220" opacity="0.8" />
+
+    <rect x="0" y="260" width="380" height="140" rx="12" fill="#061226" stroke="rgba(255,255,255,0.03)" />
+    <rect x="20" y="280" width="340" height="16" rx="8" fill="#071f33" />
+    <rect x="20" y="308" width="300" height="12" rx="6" fill="#071f33" />
+  </g>
+</svg>
