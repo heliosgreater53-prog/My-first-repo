@@ -42,6 +42,9 @@ $router->get('/profile', 'ProfileController@index', ['auth']);
 $router->post('/profile', 'ProfileController@update', ['auth', 'csrf']);
 $router->get('/settings', 'SettingsController@index', ['auth']);
 $router->post('/settings', 'SettingsController@update', ['auth', 'csrf']);
+$router->get('/settings/themes', 'SettingsController@themes', ['auth']);
+$router->post('/settings/themes', 'SettingsController@saveTheme', ['auth', 'csrf']);
+
 $router->get('/users', 'UsersController@index', ['auth']);
 
 $router->post('/users/dm-request', 'UsersController@requestDm', ['auth', 'csrf', 'activity']);

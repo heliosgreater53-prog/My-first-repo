@@ -81,13 +81,26 @@ extract($layoutData);
                 <h3 class="settings-card-title">Appearance</h3>
 
                 <div class="field">
-                    <label for="themePref">Theme</label>
+                    <div class="themes-link-row">
+                        <label for="themePref">Theme</label>
+                        <a class="settings-link-inline" href="<?= htmlspecialchars(url('/settings/themes'), ENT_QUOTES, 'UTF-8'); ?>">Themes</a>
+                    </div>
                     <select id="themePref" name="theme_pref" class="compose-select">
                         <option value="system" <?= ($themePref === 'system') ? 'selected' : ''; ?>>Use device setting</option>
-                        <option value="light" <?= ($themePref === 'light') ? 'selected' : ''; ?>>Light</option>
-                        <option value="dark" <?= ($themePref === 'dark') ? 'selected' : ''; ?>>Dark</option>
+                        <option value="light" <?= ($themePref === 'light') ? 'selected' : ''; ?>>Default Light</option>
+                        <option value="dark" <?= ($themePref === 'dark') ? 'selected' : ''; ?>>Default Dark</option>
+
+                        <option value="default_light" <?= ($themePref === 'default_light') ? 'selected' : ''; ?>>Default Light (explicit)</option>
+                        <option value="default_dark" <?= ($themePref === 'default_dark') ? 'selected' : ''; ?>>Default Dark (explicit)</option>
+                        <option value="midnight_blue" <?= ($themePref === 'midnight_blue') ? 'selected' : ''; ?>>Midnight Blue</option>
+                        <option value="forest_green" <?= ($themePref === 'forest_green') ? 'selected' : ''; ?>>Forest Green</option>
+                        <option value="sunset_orange" <?= ($themePref === 'sunset_orange') ? 'selected' : ''; ?>>Sunset Orange</option>
+                        <option value="lavender_purple" <?= ($themePref === 'lavender_purple') ? 'selected' : ''; ?>>Lavender Purple</option>
+                        <option value="rose_pink" <?= ($themePref === 'rose_pink') ? 'selected' : ''; ?>>Rose Pink</option>
+                        <option value="cyber_neon" <?= ($themePref === 'cyber_neon') ? 'selected' : ''; ?>>Cyber Neon</option>
                     </select>
                 </div>
+
 
                 <label class="settings-toggle">
                     <input type="checkbox" name="compact_ui" value="1" <?= $compactUi ? 'checked' : ''; ?>>

@@ -40,7 +40,9 @@ body {
   font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
   color: var(--text);
   background: var(--bg);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 body::before {
@@ -59,21 +61,11 @@ textarea {
   font: inherit;
 }
 
+/* Legacy `.theme-dark` kept for backwards compatibility.
+   ThemeProvider now owns all CSS variables; named themes apply regardless of this class.
+*/
 .theme-dark {
-  --bg: #020617;
-  --bg-soft: #0f172a;
-  --surface: #0f172a;
-  --surface-strong: #1e293b;
-  --surface-muted: #1e293b;
-  --border: #334155;
-  --border-strong: #475569;
-  --text: #f1f5f9;
-  --text-soft: #cbd5e1;
-  --text-faint: #64748b;
-  --accent-soft: rgba(20, 184, 166, 0.16);
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.12);
-  --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.16);
-  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.2);
+  /* no-op */
 }
 
 .theme-toggle {
@@ -95,28 +87,30 @@ textarea {
 }
 
 .toast-stack {
-   position: fixed;
-   top: 18px;
-   right: 18px;
-   z-index: 60;
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 60;
 }
 
 .toast {
-   min-width: 260px;
-   max-width: 360px;
-   padding: 14px 16px;
-   border-radius: 14px;
-   border: 1px solid transparent;
-   box-shadow: var(--shadow-md);
-   margin-bottom: 8px;
-   opacity: 0;
-   transform: translateX(120%);
-   transition: opacity 0.3s ease, transform 0.3s ease;
+  min-width: 260px;
+  max-width: 360px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 8px;
+  opacity: 0;
+  transform: translateX(120%);
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
 }
 
 .toast.show {
-   opacity: 1;
-   transform: translateX(0);
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .toast-success {
@@ -132,13 +126,13 @@ textarea {
 }
 
 .toast.show {
-   opacity: 1;
-   transform: translateX(0);
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .toast.hide {
-   opacity: 0;
-   transform: translateX(120%);
+  opacity: 0;
+  transform: translateX(120%);
 }
 
 .alert {
@@ -220,9 +214,15 @@ textarea {
   font-weight: 800;
   letter-spacing: 0;
   color: #ffffff;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--accent) 0%,
+    var(--accent-strong) 100%
+  );
   box-shadow: 0 8px 20px rgba(20, 184, 166, 0.3);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .auth-brand-mark:hover,
@@ -312,7 +312,10 @@ textarea {
   outline: none;
   background: var(--surface);
   color: var(--text);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
   font-size: 15px;
 }
 
@@ -377,11 +380,18 @@ textarea {
   border-radius: var(--radius-sm);
   cursor: pointer;
   color: #ffffff;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--accent) 0%,
+    var(--accent-strong) 100%
+  );
   box-shadow: var(--shadow-md);
   flex-shrink: 0;
   font-weight: 600;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
 }
 
 .auth-button:hover,
@@ -433,7 +443,11 @@ textarea {
   color: #fffaf4;
   font-size: 32px;
   font-weight: 700;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--accent) 0%,
+    var(--accent-strong) 100%
+  );
 }
 
 .profile-avatar-image {
@@ -482,7 +496,9 @@ textarea {
   font-weight: 600;
   letter-spacing: 0;
   text-transform: uppercase;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .profile-edit-trigger:hover,
@@ -664,7 +680,9 @@ textarea {
   background: var(--surface);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
 
 .directory-card:hover,
@@ -824,7 +842,9 @@ textarea {
   border-radius: var(--radius-md);
   color: #cbd5e1;
   font-weight: 600;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .admin-sidebar-link:hover,
@@ -948,7 +968,9 @@ textarea {
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   background: var(--surface);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .admin-message-item:hover,
@@ -1049,7 +1071,9 @@ textarea {
   color: #fff;
   cursor: pointer;
   font-weight: 600;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .admin-toggle-button:hover {
@@ -1116,7 +1140,9 @@ textarea {
   background: var(--accent);
   cursor: pointer;
   font-weight: 600;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .admin-moderation-button:hover {
@@ -1221,7 +1247,6 @@ textarea {
   color: #f8fafc;
   transition: background-color 0.3s ease;
 }
-
 
 .rail-brand {
   display: flex;
@@ -1332,7 +1357,9 @@ textarea {
   background: transparent;
   color: #cbd5e1;
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .rail-link:hover,
@@ -1369,7 +1396,10 @@ textarea {
   border-radius: var(--radius-md);
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid transparent;
-  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
 }
 
 .rail-room-card:hover {
@@ -1750,7 +1780,11 @@ textarea {
 
 .message-bubble.sent {
   color: #ffffff;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--accent) 0%,
+    var(--accent-strong) 100%
+  );
 }
 
 .message-attachment {
@@ -1833,7 +1867,11 @@ textarea {
   padding: 46px 26px;
   text-align: center;
   background:
-    linear-gradient(135deg, var(--accent-soft) 0%, rgba(20, 184, 166, 0.08) 100%),
+    linear-gradient(
+      135deg,
+      var(--accent-soft) 0%,
+      rgba(20, 184, 166, 0.08) 100%
+    ),
     var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -1879,7 +1917,9 @@ textarea {
   font: inherit;
   outline: none;
   font-size: 15px;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .room-lock-form input:focus {
@@ -1932,7 +1972,9 @@ textarea {
   background: var(--surface);
   flex: 1;
   min-width: 0;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .input-wrap:focus-within {
@@ -2002,8 +2044,13 @@ textarea {
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }
 
 .composer-meta {
@@ -2087,7 +2134,6 @@ textarea {
 }
 
 @media (max-width: 980px) {
-
   .chat-rail,
   .chat-main,
   .chat-info {
@@ -2155,7 +2201,6 @@ textarea {
     grid-template-columns: 1fr;
   }
 
-
   .auth-side {
     padding: 26px 20px;
   }
@@ -2174,7 +2219,6 @@ textarea {
     width: 100%;
     justify-content: center;
   }
-
 
   .auth-side,
   .auth-main,
@@ -2283,7 +2327,9 @@ textarea {
   border-radius: 50%;
   background: var(--text-faint);
   box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.2);
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .status-indicator.online {
@@ -2297,39 +2343,43 @@ textarea {
 
 /* Modal overlay */
 .modal-overlay {
-   position: fixed;
-   inset: 0;
-   z-index: 200;
-   display: none;
-   align-items: center;
-   justify-content: center;
-   background: rgba(0, 0, 0, 0.5);
-   backdrop-filter: blur(4px);
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
 }
 
 .modal-overlay.is-open {
-   display: flex;
-   animation: fadeIn 0.2s ease-out;
+  display: flex;
+  animation: fadeIn 0.2s ease-out;
 }
 
 .modal-overlay.is-open .modal-box {
-   animation: modalSlideUp 0.25s ease-out;
+  animation: modalSlideUp 0.25s ease-out;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modal-box {
-   width: min(90%, 560px);
-   max-height: 85vh;
-   overflow: auto;
-   background: var(--surface);
-   border: 1px solid var(--border);
-   border-radius: var(--radius-xl);
-   box-shadow: var(--shadow-lg);
-   animation: modalSlideUp 0.25s ease-out;
+  width: min(90%, 560px);
+  max-height: 85vh;
+  overflow: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  animation: modalSlideUp 0.25s ease-out;
 }
 
 @keyframes modalSlideUp {
@@ -2357,7 +2407,6 @@ textarea {
   font-weight: 600;
   color: var(--text);
 }
-
 
 .modal-close {
   width: 36px;
@@ -2399,7 +2448,9 @@ textarea {
   background: #fff;
   color: var(--text);
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .modal-input:focus {
@@ -2489,35 +2540,83 @@ textarea {
   color: var(--text);
 }
 
-
 /* Legacy chat layout blocks removed — see hybrid.css */
 /* NOTE: This duplicate @media(max-width:980px) block was removed/disabled to prevent overriding the earlier responsive rules.
    Canonical rail behavior is handled by hybrid.css. */
 
-
-
 /* Pro tip notification - global */
-.pro-tip-notification{
-    position:fixed;
-    top:1rem;
-    left:50%;
-    transform:translateX(-50%) translateY(-120%);
-    background:rgba(20,184,166,0.95);
-    color:#fff;
-    padding:12px 20px;
-    border-radius:8px;
-    font-size:14px;
-    font-weight:500;
-    box-shadow:0 4px 12px rgba(0,0,0,0.15);
-    z-index:1000;
-    transition:transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94);
-    pointer-events:none;
+.pro-tip-notification {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(-120%);
+  background: rgba(20, 184, 166, 0.95);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  pointer-events: none;
 }
 
-.pro-tip-notification.show{
-    transform:translateX(-50%) translateY(0);
+.pro-tip-notification.show {
+  transform: translateX(-50%) translateY(0);
 }
 
-@media(prefers-reduced-motion:reduce){
-    .pro-tip-notification{transition:none}
+@media (prefers-reduced-motion: reduce) {
+  .pro-tip-notification {
+    transition: none;
+  }
+}
+
+/* Scrollbar styling (clean + polished, consistent with design system) */
+:root {
+  --scrollbar-track: transparent;
+  --scrollbar-thumb: rgba(148, 163, 184, 0.55);
+  --scrollbar-thumb-hover: rgba(148, 163, 184, 0.75);
+  --scrollbar-thumb-active: rgba(148, 163, 184, 0.9);
+}
+
+html {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+/* WebKit (Chrome/Edge/Safari) */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track,
+*::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb,
+*::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: 999px;
+  border: 2px solid transparent; /* creates inset spacing without extra visuals */
+  background-clip: content-box;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover,
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover);
+  border: 2px solid transparent;
+}
+
+html::-webkit-scrollbar-thumb:active,
+body::-webkit-scrollbar-thumb:active,
+*::-webkit-scrollbar-thumb:active {
+  background-color: var(--scrollbar-thumb-active);
 }

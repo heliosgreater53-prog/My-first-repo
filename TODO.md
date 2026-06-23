@@ -1,9 +1,21 @@
-# TODO - LetsChat real-time + voice + chat actions fixes
+# TODO - Theme System Global Personalization
 
-- [ ] Fix reload issue: remove `layoutMode === "room"` early-return in `php-chat-app/public/assets/js/chat.js` composer submit handler so messages send via AJAX everywhere.
-- [ ] Fix reply/edit buttons triggering incorrectly: make message reply/edit handlers use event delegation (rebind-safe) after `refreshStream()` re-renders.
-- [ ] Fix voice note button: implement guaranteed recording upload flow by adding backend endpoint `/chat/voice/upload`.
-- [ ] Update frontend voice recording handler to upload recorded audio to `/chat/voice/upload`, then attach returned metadata/hidden fields to the composer message send.
-- [ ] Update backend `ChatController@send` to accept attachment metadata from POST (not only `$_FILES`) so voice-upload works consistently.
-- [ ] Add route `/chat/voice/upload` in `php-chat-app/routes/web.php`.
-- [ ] Update composer partial (`php-chat-app/app/views/chat/partials/composer.php`) to include hidden fields for attachment metadata (path/type/name).
+## Completed
+
+- [x] Added theme registry/provider JS: `public/assets/js/theme-provider.js`
+- [x] Integrated ThemeProvider into global header: `app/views/partials/header.php`
+- [x] Added `/settings/themes` routes in `routes/web.php`
+- [x] Implemented Themes page view: `app/views/profile/themes.php`
+- [x] Extended theme selection dropdown + added “Themes” link on `/settings`: `app/views/profile/settings.php`
+- [x] Implemented theme page controller endpoints: `app/controllers/SettingsController.php`
+- [x] Removed legacy theme toggle fighting ThemeProvider
+
+## Remaining (should be done to fully meet requirements)
+
+- [ ] Add theme card/grid styling in `public/assets/css/styles.css` (or new css) so `/settings/themes` looks polished.
+- [ ] Refactor remaining hardcoded colors in `public/assets/css/styles.css` to use CSS variables/tokens.
+- [ ] Ensure ThemeProvider transition is subtle and respects reduce-motion.
+- [ ] Validate persistence behavior end-to-end:
+  - [ ] Click theme applies instantly
+  - [ ] POST `/settings/themes` persists to `users.theme_preference`
+  - [ ] Reload restores theme

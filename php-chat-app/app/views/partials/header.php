@@ -18,15 +18,13 @@ $bodyClasses = [];
 if ($isAdminRoute) {
     $bodyClasses[] = 'admin-route';
 }
-if ($themePreference === 'dark') {
-    $bodyClasses[] = 'theme-dark';
-}
 if ($reduceMotion) {
     $bodyClasses[] = 'reduce-motion';
 }
 if ($compactUi) {
     $bodyClasses[] = 'compact-ui';
 }
+
 $requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 if ($isAdminRoute && preg_match('#/admin/auth(?:/|$)#', $requestPath)) {
     $bodyClasses[] = 'admin-auth-page';
@@ -137,19 +135,7 @@ $bodyClassAttr = $bodyClasses !== [] ? ' class="' . htmlspecialchars(implode(' '
             });
         })();
     </script>
-    <script>
-        (() => {
-            const pref = document.body.dataset.themePref || 'system';
-            const stored = localStorage.getItem('letschat-theme');
-            const wantsDark = pref === 'dark' || (pref === 'system' && stored === 'dark');
-            if (wantsDark) {
-                document.body.classList.add('theme-dark');
-            } else if (pref === 'light') {
-                document.body.classList.remove('theme-dark');
-            }
-        })();
-    </script>
-    <button class="theme-toggle" type="button" id="themeToggle" title="Toggle dark mode"><i class="bi bi-moon-stars"></i></button>
+    <script src="<?= htmlspecialchars(asset('js/theme-provider.js'), ENT_QUOTES, 'UTF-8'); ?>"></script>
     <div class="pro-tip-notification" id="proTipNotification" role="status" aria-live="polite">
         Pro tip: Fullscreen makes everything nicer
     </div>
@@ -176,12 +162,7 @@ $bodyClassAttr = $bodyClasses !== [] ? ' class="' . htmlspecialchars(implode(' '
             }, 60000);
         </script>
     <?php endif; ?>
-    <script>
-        document.getElementById('themeToggle')?.addEventListener('click', () => {
-            document.body.classList.toggle('theme-dark');
-            localStorage.setItem('letschat-theme', document.body.classList.contains('theme-dark') ? 'dark' : 'light');
-        });
-    </script>
+
 
     <!-- Generic Modal Overlay -->
     <div class="modal-overlay" id="modalOverlay" style="display:none;">
